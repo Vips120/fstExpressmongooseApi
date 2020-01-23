@@ -9,8 +9,10 @@ router.post("/usermovie", async (req, res) => {
     let { error } = Usermovievalidation(req.body);
     if (error) { return res.send(error.details[0].message) };
     let userstocks = await user.userModel.findById(req.body.userid);
+    console.log(userstocks);
     if (!userstocks) { return res.status(403).send({ message: "invalid user id" }) };
     let moviestocks = await movie.movieModel.findById(req.body.movieid);
+    console.log(moviestocks);
     if (!moviestocks) { return res.status(403).send({ message: "invalid movie id" }) };
     if (moviestocks.stocks === 0) { return res.status(404).send({ message: "out of stocks" }) };
     let data = new usermovie({

@@ -3,14 +3,19 @@ let app = express();
 let mongoose = require("mongoose");
 let fawn = require("fawn");
 fawn.init(mongoose);
+let config = require("config");
 let user = require("./routes/user");
 let genre = require("./routes/movie/genre");
 let movie = require("./routes/movie/movie");
 let stockmovie = require("./routes/transaction/movie");
 let stockuser = require("./routes/transaction/user");
 let usermoviestock = require("./routes/transaction/usermovie");
+let auth = require("./routes/auth/auth");
 let port = process.env.PORT || 4600;
 app.use(express.json());
+if (!config.get("apitoken")) {
+    process.exit(1);
+}
 mongoose
     .connect("mongodb://localhost/UDH", { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log(`connected to db`))
@@ -20,6 +25,7 @@ app.listen(port, () => console.log(`connected to port`));
 app.use("/api", user);
 app.use("/api", genre);
 app.use("/api", movie);
+app.use("/api/userlogin", auth);
 app.use("/api/stocks", stockmovie);
 app.use("/api/stocks", stockuser);
 app.use("/api/stocks", usermoviestock);
