@@ -9,13 +9,14 @@ let userSchema = new mongoose.Schema({
     UserLogin: {
         EmailId: { type: String, required: true, unique: true },
         Password: { type: String, required: true }
-    }
+    },
+    isAdmin: { type:Boolean}
 });
 
 userSchema.methods.UserToken = function () {
-    let token = jwt.sign({ _id: this._id, }, config.get("apitoken"));
+    let token = jwt.sign({ _id: this._id, isAdmin: this.isAdmin}, config.get("apitoken"));
     return token;
-}
+};
 
 let userModel = mongoose.model("users", userSchema);
 function ValidationError(error) {
